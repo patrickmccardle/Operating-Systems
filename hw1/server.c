@@ -74,7 +74,7 @@ int bind_port( unsigned int port_number ) {
 //				( 0 = No Errors, -1 = Error )
 //
 int accept_client( int server_socket_fd ) {
-	printf("in accept client, 77\n");
+	// printf("in accept client, 77\n");
 
 	int exit_status = OK;
 
@@ -98,14 +98,14 @@ int accept_client( int server_socket_fd ) {
 
 
 	//Forking
-	printf("forking, 100\n");
+	// printf("forking, 100\n");
 
 	if (fork() == 0) {
-		printf("inside fork, 104\n");
+		// printf("inside fork, 104\n");
 
 
 		if ( client_socket_fd >= 0 ) {
-			printf("client socket fd >= 0, 104\n");
+			// printf("client socket fd >= 0, 104\n");
 
 
 			bzero( request, 512 );
@@ -126,28 +126,28 @@ int accept_client( int server_socket_fd ) {
 
 			printf("if GET request, 118\n");
 		 	if (strcmp(strtok(reqDuplicate," "), "GET") == 0){
-				printf("120\n" );
-				printf("line 128 Dup\n, %s\n", reqDuplicate);
+				// printf("120\n" );
+				// printf("line 128 Dup\n, %s\n", reqDuplicate);
 				// printf("line 128 Dup2\n, %s\n", reqDuplicate2);
 		 		int count = 0;
 		 		char* stringValues = (strtok(NULL, " "));
-				printf("line 134\n%s\n", stringValues);
+				// printf("line 134\n%s\n", stringValues);
 
 		 		char* newString = stringValues+= 2;
-				printf("line 137\n%s\n", newString);
+				// printf("line 137\n%s\n", newString);
 		 		char* getTokens = strtok (newString, "&=");
-				printf("line 139\n%s\n", getTokens);
+				// printf("line 139\n%s\n", getTokens);
 		 		char get_entity[] = "<html><body><h2>CSCI 340 (Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr>";
 		 		while (getTokens != NULL){
 		 			if (count % 2 == 0){
 		 				strcat(get_entity, "<tr><td><b>");
-						printf("line 144\n%s\n", get_entity);
+						// printf("line 144\n%s\n", get_entity);
 		 				strcat(get_entity,getTokens);
-						printf("line 146\n%s\n", get_entity);
+						// printf("line 146\n%s\n", get_entity);
 		 				strcat(get_entity, "</b></td>");
-						printf("line 148\n%s\n", get_entity);
+						// printf("line 148\n%s\n", get_entity);
 		 				getTokens = strtok(NULL,"&=");
-						printf("line 147\n%s\n", getTokens);
+						// printf("line 147\n%s\n", getTokens);
 
 		 			}
 		 			else {
@@ -163,20 +163,20 @@ int accept_client( int server_socket_fd ) {
 		 		sprintf( response, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", (int)strlen( get_entity ), get_entity );
 
 		 	}
-			printf("almost inside post");
+			// printf("almost inside post");
 			if (strcmp(strtok(reqDuplicate," "), "POST") == 0){
-				printf("inside post");
+				// printf("inside post");
 				char post_entity[] = "<html><body><body><h2>CSIS 340 (Advanced Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr>";
 				char* postTokens = (strtok(request, "\n"));
-				printf("171 postTokens %s\n", postTokens);
+				// printf("171 postTokens %s\n", postTokens);
 				int boolean = 0;
 
 				while (boolean == 0){
 					postTokens = strtok(NULL, "\n");
-					printf("176 postTokens %s\n", postTokens);
+					// printf("176 postTokens %s\n", postTokens);
 					if (strlen(postTokens) == 1){
 						postTokens = strtok(NULL, "\n");
-						printf("179 postTokens %s\n", postTokens);
+						// printf("179 postTokens %s\n", postTokens);
 						boolean = 1;
 					}
 
@@ -188,11 +188,11 @@ int accept_client( int server_socket_fd ) {
 				while(postTokens != NULL){
 					if(count % 2 == 0){
 						strcat(post_entity, "<tr><td><b>");
-						printf("190 post entity %s\n", post_entity);
+						// printf("190 post entity %s\n", post_entity);
 						strcat(post_entity, postTokens);
-						printf("193 post entity %s\n", post_entity);
+						// printf("193 post entity %s\n", post_entity);
 						strcat(post_entity, "</b></td>");
-						printf("195 post entity %s\n", post_entity);
+						// printf("195 post entity %s\n", post_entity);
 						postTokens = strtok(NULL,"&=");
 
 					}
@@ -205,7 +205,6 @@ int accept_client( int server_socket_fd ) {
 					}
 					count++;
 				}
-				printf("finished wile loop 203\n");
 
 				strcat(post_entity, "</table><body></HTML>");
 				sprintf( response, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", (int)strlen( post_entity ), post_entity );
