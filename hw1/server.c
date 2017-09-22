@@ -74,6 +74,7 @@ int bind_port( unsigned int port_number ) {
 //				( 0 = No Errors, -1 = Error )
 //
 int accept_client( int server_socket_fd ) {
+	printf("in accept client, 77\n");
 
 	int exit_status = OK;
 
@@ -97,9 +98,15 @@ int accept_client( int server_socket_fd ) {
 
 
 	//Forking
-	if (fork == 0) {
+	printf("forking, 100\n");
+
+	if (fork() == 0) {
+		printf("inside fork, 104\n");
+
 
 		if ( client_socket_fd >= 0 ) {
+			printf("client socket fd >= 0, 104\n");
+
 
 			bzero( request, 512 );
 
@@ -107,53 +114,41 @@ int accept_client( int server_socket_fd ) {
 
 			if ( DEBUG ) printf("Here is the http message:\n%s\n\n", request );
 
-			// -------------------------------------
-			// TODO:
-			// -------------------------------------
-			// Generate the correct http response when a GET or POST method is sent
-			// from the client to the server.
-			//
-			// In general, you will parse the request character array to:
-			// 1) Determine if a GET or POST method was used
-			// 2) Then retrieve the key/value pairs (see below)
-			// -------------------------------------
 
-			/*
-			 ------------------------------------------------------
-			 GET method key/values are located in the URL of the request message
-			 ? - indicates the beginning of the key/value pairs in the URL
-			 & - is used to separate multiple key/value pairs
-			 = - is used to separate the key and value
-
-
-			 Example:
-
-			 http://localhost/?first=brent&last=munsell
-
-			 two &'s indicated two key/value pairs (first=brent and last=munsell)
-			 key = first, value = brent
-			 key = last, value = munsell
-			 ------------------------------------------------------
-			 */
 
 
 			 char* entity_body = "<html><body><h2>CSCI 340 (Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr></table></body></html>";
 
 		 	char response[512];
 
-		 	char* duplicate = strdup(request);
-		 	if (strcmp(strtok(duplicate," "), "GET") == 0){
+		 	char* reqDuplicate = strdup(request);
+			// 	char* reqDuplicate2 = strdup(request);
+
+			printf("if GET request, 118\n");
+		 	if (strcmp(strtok(reqDuplicate," "), "GET") == 0){
+				printf("120\n" );
+				printf("line 128 Dup\n, %s\n", reqDuplicate);
+				// printf("line 128 Dup2\n, %s\n", reqDuplicate2);
 		 		int count = 0;
 		 		char* stringValues = (strtok(NULL, " "));
+				printf("line 134\n%s\n", stringValues);
+
 		 		char* newString = stringValues+= 2;
+				printf("line 137\n%s\n", newString);
 		 		char* getTokens = strtok (newString, "&=");
-		 		char entity[] = "<html><body><h2>CSCI 340 (Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr></table></body></html>";
+				printf("line 139\n%s\n", getTokens);
+		 		char get_entity[] = "<html><body><h2>CSCI 340 (Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr>";
 		 		while (getTokens != NULL){
 		 			if (count % 2 == 0){
 		 				strcat(get_entity, "<tr><td><b>");
+						printf("line 144\n%s\n", get_entity);
 		 				strcat(get_entity,getTokens);
+						printf("line 146\n%s\n", get_entity);
 		 				strcat(get_entity, "</b></td>");
+						printf("line 148\n%s\n", get_entity);
 		 				getTokens = strtok(NULL,"&=");
+						printf("line 147\n%s\n", getTokens);
+
 		 			}
 		 			else {
 		 				strcat(get_entity, "<td>");
@@ -164,38 +159,45 @@ int accept_client( int server_socket_fd ) {
 		 			}
 		 			count++;
 		 		}
-		 		strcat(entity, "</table></body></html>");
-		 		sprintf( response, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", (int)strlen( entity_body ), entity_body );
+		 		strcat(get_entity, "</table></body></html>");
+		 		sprintf( response, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", (int)strlen( get_entity ), get_entity );
 
 		 	}
-
-			if (strcmp(strktok(duplicate," "), "POST") == 0){
-				char post_entity[] "<html><body><body><h2>CSIS 340 (Advanced Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr>";
-				char* postTokens = (strtok(request, "/n"));
-				printf("%s/n", postTokens);
+			printf("almost inside post");
+			if (strcmp(strtok(reqDuplicate," "), "POST") == 0){
+				printf("inside post");
+				char post_entity[] = "<html><body><body><h2>CSIS 340 (Advanced Operating Systems) Project 1</h2><table border=1 width=\"50%\"><tr><th>Key</th><th>Value</th></tr>";
+				char* postTokens = (strtok(request, "\n"));
+				printf("171 postTokens %s\n", postTokens);
 				int boolean = 0;
 
 				while (boolean == 0){
-					postTokens = strtok(NULL, "/n");
+					postTokens = strtok(NULL, "\n");
+					printf("176 postTokens %s\n", postTokens);
 					if (strlen(postTokens) == 1){
-						postTokens = strtok(NULL, "/n");
+						postTokens = strtok(NULL, "\n");
+						printf("179 postTokens %s\n", postTokens);
 						boolean = 1;
 					}
 
 				}
 				postTokens = strtok(postTokens,"&=");
-				int count = 0;
 
+				int count = 0;
+				printf("\npost tokens: 2 %s\n", postTokens);
 				while(postTokens != NULL){
 					if(count % 2 == 0){
 						strcat(post_entity, "<tr><td><b>");
+						printf("190 post entity %s\n", post_entity);
 						strcat(post_entity, postTokens);
+						printf("193 post entity %s\n", post_entity);
 						strcat(post_entity, "</b></td>");
-						postTokens = strtok(postTokens,"&=");
+						printf("195 post entity %s\n", post_entity);
+						postTokens = strtok(NULL,"&=");
 
 					}
 					else{
-						strcat(post_entity,"<td");
+						strcat(post_entity,"<td>");
 						strcat(post_entity, postTokens);
 						strcat(post_entity,"</td>");
 						postTokens = (strtok(NULL, "&="));
@@ -203,33 +205,12 @@ int accept_client( int server_socket_fd ) {
 					}
 					count++;
 				}
+				printf("finished wile loop 203\n");
+
 				strcat(post_entity, "</table><body></HTML>");
 				sprintf( response, "HTTP/1.1 200 OK\r\nContent-Length: %d\r\n\r\n%s", (int)strlen( post_entity ), post_entity );
 
 			}
-
-
-
-
-
-			/*
-			 ------------------------------------------------------
-			 POST method key/value pairs are located in the entity body of the request message
-			 ? - indicates the beginning of the key/value pairs
-			 & - is used to delimit multiple key/value pairs
-			 = - is used to delimit key and value
-
-			 Example:
-
-			 first=brent&last=munsell
-
-			 two &'s indicated two key/value pairs (first=brent and last=munsell)
-			 key = first, value = brent
-			 key = last, value = munsell
-			 ------------------------------------------------------
-			 */
-
-			// THIS IS AN EXAMPLE ENTITY BODY
 
 
 
@@ -247,9 +228,14 @@ int accept_client( int server_socket_fd ) {
 
 		}
 
-}
 
 	if ( DEBUG ) printf("Exit status = %d\n", exit_status );
+	exit(0);
+}
+
+else {
+	close (client_socket_fd);
+}
 
 	return exit_status;
 

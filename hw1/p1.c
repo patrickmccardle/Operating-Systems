@@ -5,7 +5,7 @@
 #include <sys/socket.h>	// listen function
 #include <unistd.h>		// close function
 #include <signal.h>	// signals
-#include <wait.h>	// waitpid 
+#include <wait.h>	// waitpid
 #include "server.h"		// our code :)
 
 // -------------------------------------------------
@@ -20,10 +20,10 @@ static void sig_int_handler( int sig );
 
 /*
 
-Project 1: CSIS 614 
+Project 1: CSIS 614
 Advanced Operating Systems
 
-Developing a http server that forks child processes, and uses signal handlers to 
+Developing a http server that forks child processes, and uses signal handlers to
 remove children from process table.
 
 */
@@ -50,7 +50,7 @@ int main( int argc, char *argv[] ) {
 	// Verify correct number of arguments are provided
 	// when the server is executed.
 
-	if ( argc == 2 ) { 
+	if ( argc == 2 ) {
 
 		port_number = (unsigned int) atoi( argv[1] );
 
@@ -70,9 +70,9 @@ int main( int argc, char *argv[] ) {
 			while ( listen( server_socket_fd, 0 ) == 0 ) {
 
 				printf("Server socket listening and accepting connections on port %d\n", port_number );
-
+				printf("About to call accept_client\n");
 				accept_client( server_socket_fd );
-
+				printf("Called accept_client\n");
 			}
 
 		}
@@ -85,7 +85,7 @@ int main( int argc, char *argv[] ) {
 	}
 
 	return OK;
-     
+
 } // end main function
 
 static void sig_int_handler( int sig ) {
@@ -101,10 +101,10 @@ static void sig_child_handler( int sig ) {
 	// -------------------------------------
 	// TODO:
 	// -------------------------------------
-	// You complete child signal handler code to remove child process from process 
+	// You complete child signal handler code to remove child process from process
 	// table (i.e. reap the child)
 	// -------------------------------------
 
-	
+
 
 } // end sig_child_handler function
