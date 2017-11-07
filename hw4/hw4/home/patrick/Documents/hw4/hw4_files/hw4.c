@@ -51,13 +51,9 @@ inline void guard_check_room()
 {
 
   if( num_students < capacity && num_students != 0) {
-
     printf("room has SOME students, guard_state set to -1, guard is waiting");
     guard_state = -1;
     semWaitB(&mutex);
-    // while (num_students > 1) {
-    //
-    // }
 
   }
   else if( num_students >= capacity) {
@@ -102,19 +98,25 @@ inline void guard_check_room()
 // this function contains the main synchronization logic for a student
 inline void student_study_in_room(long id)
 {
-  if ( guard_state == 0) {
-    printf("if guard_state == 0, semwait & num_students++");
+  if ( guard_state < 1) {
+    // printf("\nif guard_state < 1, semwait & num_students++\n");
     semWaitB(&mutex);
+    // printf("\nafter wait");
     num_students++;
+    // printf("\nafter student ++");
     semSignalB(&mutex);
+    // printf("\nafter semSignal ++");
     study(id);
-  }
-
-  // semWaitB(&mutex);
-  // num_students--;
-  printf("student %id left room", id)
-  if (num_students == 0 && guard_state > 0) {
-    printf("LAST student %id left room", id);
+    // printf("\nstudent is studying");
+    semWaitB(&mutex);
+    num_students--;
+    if (num_students == 0 && guard_state > 0) {
+      printf("LAST student %id left room", id);
+    }
+    else {
+      printf("student %id left room", id);
+    }
+    semSignalB(&mutex);
   }
 
   // TODO: complete this routine to execute the behavior of a student,
@@ -155,6 +157,7 @@ inline void study(long id)  // student studies for some random time
   printf("student %2ld studying in room with %2d students for %3d millisecs\n",
 	 id, num_students, ms);
   millisleep(ms);
+  printf("\nafter ms ++");
 }
 
 inline void do_something_else(long id)    // student does something else
@@ -230,12 +233,12 @@ int main(int argc, char** argv)  // the main function
 
   // TODO: get three input parameters, convert, and properly store
   // HINT: use atoi() function (see man page for more details).
-
-  if (sscanf (argv[1], "%i", &intvar) != 1) {
-  fprintf(stderr, "error - not an integer");
-}
-
-
+  n = atoi(argv[0]);
+  n++;
+  int max_capacity = atoi(argv[1]);
+  max_capacity++;
+  int num_checks = atoi(argv[2]);
+  num_checks++;
 
 
   // allocate space for the seeds[] array
